@@ -10,6 +10,19 @@ def kanan(p1, p2, p3):
 def jaraktitikkegaris(p1, p2, p3):
     return linalg.norm(np.cross(p2-p1, p1-p3)) / linalg.norm(p2-p1)
 
+def area(p1, p2, p3):
+    return abs((p1[0] * (p2[1] - p3[1]) + p2[0] * (p3[1] - p1[1]) + p3[0] * (p1[1] - p2[1])) / 2.0)
+
+def isInside(p1, p2, p3, p):
+    A = area(p1, p2, p3)
+    A1 = area(p, p2, p3)
+    A2 = area(p1, p, p3)
+    A3 = area(p1, p2, p)
+    if (A == A1 + A2 + A3):
+        return True
+    else:
+        return False
+
 def divideandconquer(semua_bagian, bagian, titik1, titik2, solusi):
     global hull
     hull = solusi
@@ -47,11 +60,11 @@ def divideandconquer(semua_bagian, bagian, titik1, titik2, solusi):
                 right += 1
         if (left < right):
             for i in range(len(bagian)):
-                if (kiri(titik1, titiksampel, bagian[i])):
+                if (kiri(titik1, titiksampel, bagian[i]) and not isInside(titik1, titiksampel, titik2, bagian[i])):
                     all_part[a].append(bagian[i])
         elif (left > right):
             for i in range(len(bagian)):
-                if (kanan(titik1, titiksampel, bagian[i])):
+                if (kanan(titik1, titiksampel, bagian[i]) and not isInside(titik1, titiksampel, titik2, bagian[i])):
                     all_part[a].append(bagian[i])
 
         b = total_part
@@ -67,11 +80,11 @@ def divideandconquer(semua_bagian, bagian, titik1, titik2, solusi):
                 right += 1
         if (left < right):
             for i in range(len(bagian)):
-                if (kiri(titiksampel, titik2, bagian[i])):
+                if (kiri(titiksampel, titik2, bagian[i]) and not isInside(titik1, titiksampel, titik2, bagian[i])):
                     all_part[b].append(bagian[i])
         elif (left > right):
             for i in range(len(bagian)):
-                if (kanan(titiksampel, titik2, bagian[i])):
+                if (kanan(titiksampel, titik2, bagian[i]) and not isInside(titik1, titiksampel, titik2, bagian[i])):
                     all_part[b].append(bagian[i])
 
         divideandconquer(all_part, all_part[a], titik1, titiksampel, hull)
